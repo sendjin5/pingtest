@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>WIFI 대시보드</title>
+  <style>
+    li {
+        list-style: none;
+        cursor: pointer;
+        margin: 15px 0;
+    }
+  </style>
+</head>
+<body>
+  <h2>모든 IP Ping 테스트</h2>
+  <button onclick="checkAll()">모두 테스트</button>
+  <ul id="results"></ul>
+
+  <script>
+    function checkAll() {
+      const resultList = document.getElementById("results");
+      resultList.innerHTML = "테스트 중...";
+
+      fetch(`http://localhost:8080/ping-all`)
+        .then(res => res.json())
+        .then(data => {
+          resultList.innerHTML = "";
+          data.forEach(entry => {
+            const li = document.createElement("li");
+            const li2 = document.createElement("li");
+            li.textContent =
+              `${entry.status === '응답 완료' ? '✅' : '❌'} [${entry.label}] ${entry.ip} - ${entry.status} : ` +
+              (entry.time ? ` (${entry.time})` : '');
+            li2.innerHTML = `<pre style="white-space: pre-wrap; margin-left: 20px;">${entry.stdout}</pre>`;
+            li2.style.display = "none";
+
+            li.addEventListener("click", () => {
+            li2.style.display = li2.style.display === "none" ? "block" : "none";
+            });
+            resultList.appendChild(li);
+            resultList.appendChild(li2);
+          });
+        })
+        .catch(err => {
+          resultList.innerHTML = "에러 발생: " + err;
+        });
+    }
+  </script>
+</body>
+</html>
