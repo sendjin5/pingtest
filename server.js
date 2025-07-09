@@ -16,6 +16,11 @@ app.use(express.json());
 // ✅ .env 파일에서 IP 목록 불러오기
 const ipList = JSON.parse(process.env.IP_LIST || '[]');
 
+// ✅ IP 목록 반환 API
+app.get('/api/ip-list', (req, res) => {
+  res.json(ipList);
+});
+
 // ✅ 모든 IP에 ping 테스트
 app.get('/ping-all', async (req, res) => {
   const pingPromises = ipList.map(({ label, ip }) => {
