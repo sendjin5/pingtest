@@ -13,6 +13,7 @@ app.use(cors());
 // JSON 파싱 미들웨어
 app.use(express.json());
 
+
 // ✅ .env 파일에서 IP 목록 불러오기
 const ipList = JSON.parse(process.env.IP_LIST || '[]');
 
