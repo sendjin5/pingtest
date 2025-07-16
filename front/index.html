@@ -19,7 +19,8 @@
 
   <script>
     function openAllIPs() {
-      fetch(`/api/ip-list`)
+      // fetch(`/api/ip-list`)
+      fetch('http://localhost:8080/ip-list')
         .then(res => res.json())
         .then(ipList => {
           if (ipList.length === 0) {
@@ -45,7 +46,8 @@
       const resultList = document.getElementById("results");
       resultList.innerHTML = "테스트 중...";
 
-      fetch(`/api/ping-all`)
+      // fetch(`/api/ping-all`)
+      fetch('http://localhost:8080/ping-all')
         .then(res => res.json())
         .then(data => {
           resultList.innerHTML = "";
