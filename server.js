@@ -18,15 +18,20 @@ app.use(express.json());
 const ipList = JSON.parse(process.env.IP_LIST || '[]');
 
 // ✅ IP 목록 반환 API
-app.get('/api/ip-list', (req, res) => {
+app.get('/ip-list', (req, res) => {
   res.json(ipList);
 });
+
+// 로컬 PC 사용자명과 SSH 설정
+const sshUser = 'alpaca'; // ← 여기에 로컬 PC 유저명
+const sshPort = 9000; // Reverse SSH로 열어둔 포트
 
 // ✅ 모든 IP에 ping 테스트
 app.get('/ping-all', async (req, res) => {
   const pingPromises = ipList.map(({ label, ip }) => {
     return new Promise(resolve => {
-        exec(`ping ${ip}`, { encoding: 'buffer' }, (error, stdout, stderr) => {
+      const sshCommand = `ssh -o ConnectTimeout=2 -p ${sshPort} ${sshUser}@localhost "ping -c 1 ${ip}"`;
+      exec(sshCommand, { encoding: 'buffer' }, (error, stdout, stderr) => {
             // stdout을 한글로 변환 (EUC-KR → UTF-8)
             const decodedOutput = iconv.decode(stdout, 'euc-kr'); // 혹은 'cp949'
             let status = '오류';
@@ -44,7 +49,7 @@ app.get('/ping-all', async (req, res) => {
         console.log(`[진행중] ${label} (${ip}) → ${status}, ${time}, 응답:\n${decodedOutput}`);
         resolve({ label, ip, status, time, stdout: decodedOutput });
 
-        });
+      });
     });
   });
 
