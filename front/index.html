@@ -4,14 +4,36 @@
   <meta charset="UTF-8" />
   <title>WIFI 대시보드</title>
   <style>
+    * {
+      margin: 20px;
+    }
     body {
       display: flex;
       flex-direction: column;
+      align-items: center;
     }
-    li {
-        list-style: none;
-        cursor: pointer;
-        margin: 15px 0;
+    .button-container {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 50px 0 30px;
+      width: 100%;
+    }
+    .button {
+      background-color: #ddd;
+      border: none;
+      color: black;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 24px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 12px;
+      font-weight: bold;
+      width: 100%;
+      max-width: 300px;
     }
     table {
       border-collapse: collapse;
@@ -22,19 +44,220 @@
       border: 1px solid #ddd;
       padding: 8px;
     }
+    td:nth-child(1) { width: 8%; font-size: 1.5em; }
+
     /* 각 열의 너비 설정 */
     th:nth-child(1), td:nth-child(1) { width: 8%; }  /* 상태 아이콘 */
     th:nth-child(2), td:nth-child(2) { width: 25%; } /* 라벨 */
-    th:nth-child(3), td:nth-child(3) { width: 20%; } /* IP */
-    th:nth-child(4), td:nth-child(4) { width: 20%; } /* 상태 */
-    th:nth-child(5), td:nth-child(5) { width: 15%; } /* 시간 */
+    th:nth-child(3), td:nth-child(3) { width: 40%; } /* IP */
+    th:nth-child(5), td:nth-child(5) { width: 15%; } /* 응답 */
+
+    /* wifi loading start*/
+    /* From Uiverse.io by mobinkakei */ 
+#wifi-loader {
+  --background: #62abff;
+  --front-color: #4f29f0;
+  --back-color: #c3c8de;
+  --text-color: #414856;
+  width: 100%;
+  height: 50%;
+  border-radius: 50px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#wifi-loader svg {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#wifi-loader svg circle {
+  position: absolute;
+  fill: none;
+  stroke-width: 6px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transform: rotate(-100deg);
+  transform-origin: center;
+}
+
+#wifi-loader svg circle.back {
+  stroke: var(--back-color);
+}
+
+#wifi-loader svg circle.front {
+  stroke: var(--front-color);
+}
+
+#wifi-loader svg.circle-outer {
+  height: 86%;
+  width: 86%;
+}
+
+#wifi-loader svg.circle-outer circle {
+  stroke-dasharray: 62.75 188.25;
+}
+
+#wifi-loader svg.circle-outer circle.back {
+  animation: circle-outer135 3s ease infinite 0.25s;
+}
+
+#wifi-loader svg.circle-outer circle.front {
+  animation: circle-outer135 3s ease infinite 0.15s;
+}
+
+#wifi-loader svg.circle-middle {
+  height: 60%;
+  width: 60%;
+}
+
+#wifi-loader svg.circle-middle circle {
+  stroke-dasharray: 42.5 127.5;
+}
+
+#wifi-loader svg.circle-middle circle.back {
+  animation: circle-middle6123 3s ease infinite 0.2s;
+}
+
+#wifi-loader svg.circle-middle circle.front {
+  animation: circle-middle6123 3s ease infinite 0.1s;
+}
+
+#wifi-loader svg.circle-inner {
+  height: 34%;
+  width: 34%;
+}
+
+#wifi-loader svg.circle-inner circle {
+  stroke-dasharray: 22 66;
+}
+
+#wifi-loader svg.circle-inner circle.back {
+  animation: circle-inner162 3s ease infinite 0.15s;
+}
+
+#wifi-loader svg.circle-inner circle.front {
+  animation: circle-inner162 3s ease infinite 0.05s;
+}
+
+#wifi-loader .text {
+  position: absolute;
+  bottom: -40%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: lowercase;
+  font-weight: 500;
+  font-size: 150%;
+  letter-spacing: 0.2px;
+}
+
+#wifi-loader .text::before, #wifi-loader .text::after {
+  content: attr(data-text);
+}
+
+#wifi-loader .text::before {
+  color: var(--text-color);
+}
+
+#wifi-loader .text::after {
+  color: var(--front-color);
+  animation: text-animation76 3.6s ease infinite;
+  position: absolute;
+  left: 0;
+}
+
+@keyframes circle-outer135 {
+  0% {
+    stroke-dashoffset: 25;
+  }
+
+  25% {
+    stroke-dashoffset: 0;
+  }
+
+  65% {
+    stroke-dashoffset: 301;
+  }
+
+  80% {
+    stroke-dashoffset: 276;
+  }
+
+  100% {
+    stroke-dashoffset: 276;
+  }
+}
+
+@keyframes circle-middle6123 {
+  0% {
+    stroke-dashoffset: 17;
+  }
+
+  25% {
+    stroke-dashoffset: 0;
+  }
+
+  65% {
+    stroke-dashoffset: 204;
+  }
+
+  80% {
+    stroke-dashoffset: 187;
+  }
+
+  100% {
+    stroke-dashoffset: 187;
+  }
+}
+
+@keyframes circle-inner162 {
+  0% {
+    stroke-dashoffset: 9;
+  }
+
+  25% {
+    stroke-dashoffset: 0;
+  }
+
+  65% {
+    stroke-dashoffset: 106;
+  }
+
+  80% {
+    stroke-dashoffset: 97;
+  }
+
+  100% {
+    stroke-dashoffset: 97;
+  }
+}
+
+@keyframes text-animation76 {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  50% {
+    clip-path: inset(0);
+  }
+
+  100% {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+    /* wifi loading end*/
   </style>
 </head>
 <body>
-  <h2>네트워크 테스트</h2>
-  <div style="display:flex; gap: 10px;">
-    <button onclick="checkAll()">테스트</button>
-    <button onclick="openAllIPs()">모든 IP 웹주소 열기</button>
+  <h1>강의장 네트워크 테스트</h1>
+  <div class="button-container">
+    <button class="button btn1" onclick="checkAll()">🔜 IP 테 스 트</button>
+    <button class="button" onclick="openAllIPs()">모든 IP 웹주소 열기</button>
   </div>
   <table>
     <thead>
@@ -42,12 +265,10 @@
         <th>여부</th>
         <th>위치</th>
         <th>IP</th>
-        <th>시간</th>
         <th>응답</th>
     </tr>
     </thead>
     <tbody>
-     
     </tbody>
   </table>
   <script>
@@ -77,7 +298,22 @@
 
     function checkAll() {
       const resultList = document.querySelector("tbody");
-      resultList.innerHTML = "<tr><td colspan='5'>테스트 중...</td></tr>";
+      resultList.innerHTML = `<tr><td colspan='4' style='height: 500px;'><div id="wifi-loader">
+    <svg class="circle-outer" viewBox="0 0 86 86">
+        <circle class="back" cx="43" cy="43" r="40"></circle>
+        <circle class="front" cx="43" cy="43" r="40"></circle>
+        <circle class="new" cx="43" cy="43" r="40"></circle>
+    </svg>
+    <svg class="circle-middle" viewBox="0 0 60 60">
+        <circle class="back" cx="30" cy="30" r="27"></circle>
+        <circle class="front" cx="30" cy="30" r="27"></circle>
+    </svg>
+    <svg class="circle-inner" viewBox="0 0 34 34">
+        <circle class="back" cx="17" cy="17" r="14"></circle>
+        <circle class="front" cx="17" cy="17" r="14"></circle>
+    </svg>
+    <div class="text" data-text="Searching"></div>
+</div></td></tr>`;
 
       // fetch(`/api/ping-all`)
       fetch('http://localhost:8080/ping-all')
@@ -92,19 +328,16 @@
             const statusTd = document.createElement("td");
             const labelTd = document.createElement("td");
             const ipTd = document.createElement("td");
-            const statusTextTd = document.createElement("td");
             const timeTd = document.createElement("td");
             
             statusTd.textContent = entry.status === '응답 완료' ? '✅' : '❌';
             labelTd.textContent = entry.label;
             ipTd.textContent = entry.ip;
-            statusTextTd.textContent = entry.status;
             timeTd.textContent = entry.time || '-';
             
             tr.appendChild(statusTd);
             tr.appendChild(labelTd);
             tr.appendChild(ipTd);
-            tr.appendChild(statusTextTd);
             tr.appendChild(timeTd);
             
             // 상세 정보 표시용 행 (클릭 시 토글)
