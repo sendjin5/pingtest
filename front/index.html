@@ -274,6 +274,15 @@
     </tbody>
   </table>
   <script>
+
+    // 자동 주소 변경
+    window.onload = function () {
+      fetch('/api/redirect', { credentials: 'include' })
+        .then(() => {
+        });
+    };
+
+
     function openAllIPs() {
       fetch(`/api/ip-list`)
       // fetch('http://localhost:8080/ip-list')
