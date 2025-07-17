@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { exec } = require('child_process');
+const cookieParser = require('cookie-parser');
 const path = require('path');
 const app = express();
 const port = process.env.PORT || 8080;
@@ -19,6 +20,9 @@ app.use(cors({
 // JSON 파싱 미들웨어
 app.use(express.json());
 
+// 쿠키
+app.use(cookieParser());
+
 // .env 파일에서 IP 목록 불러오기
 const ipList = JSON.parse(process.env.IP_LIST || '[]');
 // 한국식 시간 계산
@@ -33,13 +37,46 @@ function getDateTime() {
     hour12: false,
   }).replace(/\. /g, '-').replace(/\./g, '').replace(' ', '-');
 }
+let clientIp = '';
+
+// window open 시 사용자 ip 확인 후 redirect
+app.get('/redirect', (req, res) => {
+  console.log(`redirect 시작 gogo`);
+  if (!req.cookies.visited) {
+    console.log(`!req.cookies.visited 시작`);
+    const rawIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const InclientIp = rawIp.replace(/^::ffff:/, '');
+    clientIp = InclientIp;
+    console.log(`접속한 IP: ${InclientIp}`);
+
+    // 방문 쿠키 설정 (1시간 유지)
+    // res.cookie('visited', 'true', { maxAge: 3600000 });
+
+    const ipParts = InclientIp.split('.');
+    console.log(`ipParts: ${ipParts}`);
+    const first = parseInt(ipParts[0], 10);
+    console.log(`first: ${first}`);
+    const second = parseInt(ipParts[1], 10);
+    console.log(`second: ${second}`);
+    console.log(`${InclientIp} : ${first}, ${second}`);
+
+    if(first === 10 && second === 40){
+      res.redirect(`http://10.40.1.183:5000/`);
+      console.log(`직원망으로`)
+    } else {
+      res.redirect(`http://10.41.0.125:5000/`);
+      console.log(`학생망으로`)
+    }
+  }
+  console.log(`!req.cookies.visited 안함`);
+   // 쿠키가 있으면 리디렉션 생략 또는 기본 응답
+   res.send('이미 접속한 사용자');
+});
 
 // IP 목록 반환 API
 app.get('/ip-list', (req, res) => {
   const datetime = getDateTime();
-  const rawIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-  const clientIp = rawIp.replace(/^::ffff:/, '');
-  console.log(`접속한 IP: ${clientIp} (${datetime})`);
+  console.log(`실행한 IP: ${clientIp} (${datetime})`);
   console.log('/ip-list 실행');
   res.json({
     ipList: ipList
@@ -53,9 +90,7 @@ app.get('/ip-list', (req, res) => {
 // 모든 IP에 ping 테스트
 app.get('/ping-all', async (req, res) => {
   const datetime = getDateTime();
-  const rawIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-  const clientIp = rawIp.replace(/^::ffff:/, '');
-  console.log(`접속한 IP: ${clientIp} (${datetime})`);
+  console.log(`실행한 IP: ${clientIp} (${datetime})`);
   console.log('/ping-all 실행');
 
   const pingPromises = ipList.map(({ label, ip }) => {
