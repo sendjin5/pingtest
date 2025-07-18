@@ -13,7 +13,8 @@ app.set('trust proxy', true);
 
 // CORS 설정 - 특정 IP에서만 접근 허용
 app.use(cors({
-  origin: 'http://10.40.1.183:5000',
+  origin: ['http://10.40.1.183:5000',
+          'http://10.41.0.125:5000/'],
   credentials: true
 }));
 
@@ -50,7 +51,7 @@ app.get('/redirect', (req, res) => {
     console.log(`접속한 IP: ${InclientIp}`);
 
     // 방문 쿠키 설정 (1시간 유지)
-    // res.cookie('visited', 'true', { maxAge: 3600000 });
+    res.cookie('visited', 'true', { maxAge: 3600000 });
 
     const ipParts = InclientIp.split('.');
     console.log(`ipParts: ${ipParts}`);
@@ -61,16 +62,16 @@ app.get('/redirect', (req, res) => {
     console.log(`${InclientIp} : ${first}, ${second}`);
 
     if(first === 10 && second === 40){
-      res.redirect(`http://10.40.1.183:5000/`);
       console.log(`직원망으로`)
+      return res.redirect(`http://10.40.1.183:5000/`);
     } else {
-      res.redirect(`http://10.41.0.125:5000/`);
       console.log(`학생망으로`)
+      return res.redirect(`http://10.41.0.125:5000/`);
     }
+  } else {
+    console.log(`!req.cookies.visited 안함`);
+    return res.send('이미 접속한 사용자');
   }
-  console.log(`!req.cookies.visited 안함`);
-   // 쿠키가 있으면 리디렉션 생략 또는 기본 응답
-   res.send('이미 접속한 사용자');
 });
 
 // IP 목록 반환 API
