@@ -11,7 +11,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      max-width: 1500px;
+      max-width: 1200px;
       margin: 0 auto;
     }
     .button-container {
@@ -50,9 +50,9 @@
 
     /* 각 열의 너비 설정 */
     th:nth-child(1), td:nth-child(1) { width: 8%; }  /* 상태 아이콘 */
-    th:nth-child(2), td:nth-child(2) { width: 25%; } /* 라벨 */
-    th:nth-child(3), td:nth-child(3) { width: 40%; } /* IP */
-    th:nth-child(5), td:nth-child(5) { width: 15%; } /* 응답 */
+    th:nth-child(2), td:nth-child(2) { width: 15%; } /* 라벨 */
+    th:nth-child(3), td:nth-child(3) { width: 20%; } /* IP */
+    th:nth-child(4), td:nth-child(4) { width: 10%; } /* 응답 */
 
     /* wifi loading start*/
     /* From Uiverse.io by mobinkakei */ 
@@ -271,18 +271,21 @@
     </tr>
     </thead>
     <tbody>
+      <tr>
+        <td colspan="4">테스트 대기중</td>
+      </tr>
     </tbody>
   </table>
   <script>
 
     // 자동 주소 변경
-    window.onload = function () {
-      fetch('/api/redirect', { credentials: 'include' })
-        .then(() => {
-        });
-    };
+    // document.addEventListener('DOMContentLoaded', function() {
+    //   fetch(`/api/redirect`, { credentials: 'include' })
+    //     .then(() => {
+    //     });
+    // });
 
-
+    // 모든 IP 웹주소 열기
     function openAllIPs() {
       fetch(`/api/ip-list`)
       // fetch('http://localhost:8080/ip-list')
@@ -306,6 +309,7 @@
         });
     }
 
+    // 네트워크 IP 테스트
     function checkAll() {
       const resultList = document.querySelector("tbody");
       resultList.innerHTML = `<tr><td colspan='4' style='height: 500px;'><div id="wifi-loader">
