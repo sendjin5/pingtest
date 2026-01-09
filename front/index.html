@@ -11,6 +11,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
     }
     .button-container {
       display: flex;
@@ -48,9 +50,9 @@
 
     /* 각 열의 너비 설정 */
     th:nth-child(1), td:nth-child(1) { width: 8%; }  /* 상태 아이콘 */
-    th:nth-child(2), td:nth-child(2) { width: 25%; } /* 라벨 */
-    th:nth-child(3), td:nth-child(3) { width: 40%; } /* IP */
-    th:nth-child(5), td:nth-child(5) { width: 15%; } /* 응답 */
+    th:nth-child(2), td:nth-child(2) { width: 15%; } /* 라벨 */
+    th:nth-child(3), td:nth-child(3) { width: 20%; } /* IP */
+    th:nth-child(4), td:nth-child(4) { width: 10%; } /* 응답 */
 
     /* wifi loading start*/
     /* From Uiverse.io by mobinkakei */ 
@@ -256,7 +258,7 @@
 <body>
   <h1>강의장 네트워크 테스트</h1>
   <div class="button-container">
-    <button class="button btn1" onclick="checkAll()">🔜 IP 테 스 트</button>
+    <button class="button btn1" onclick="checkAll()">IP 테 스 트 🔜</button>
     <button class="button" onclick="openAllIPs()">모든 IP 웹주소 열기</button>
   </div>
   <table>
@@ -269,23 +271,34 @@
     </tr>
     </thead>
     <tbody>
+      <tr>
+        <td colspan="4">테스트 대기중</td>
+      </tr>
     </tbody>
   </table>
   <script>
+
+    // 자동 주소 변경
+    // document.addEventListener('DOMContentLoaded', function() {
+    //   fetch(`/api/redirect`, { credentials: 'include' })
+    //     .then(() => {
+    //     });
+    // });
+
+    // 모든 IP 웹주소 열기
     function openAllIPs() {
-      // fetch(`/api/ip-list`)
-      fetch('http://localhost:8080/ip-list')
+      fetch(`/api/ip-list`)
+      // fetch('http://localhost:8080/ip-list')
         .then(res => res.json())
-        .then(ipList => {
-          if (ipList.length === 0) {
+        .then(key => {
+          if (key.ipList.length === 0) {
             alert('IP 목록이 비어있습니다.'); 
             return;
           }
-          
-          const confirmMessage = `총 ${ipList.length}개의 IP를 웹주소로 열겠습니다`;
+          const confirmMessage = `강의장 Wifi로만 인입이 가능합니다. \n \n${key.ipList.length}개의 IP를 웹 브라우저로 열겠습니다`;
           
           if (confirm(confirmMessage)) {
-            ipList.forEach(({ label, ip }) => {
+            key.ipList.forEach(({ label, ip }) => {
               const url = `http://${ip}`;
               window.open(url, '_blank');
             });
@@ -296,6 +309,7 @@
         });
     }
 
+    // 네트워크 IP 테스트
     function checkAll() {
       const resultList = document.querySelector("tbody");
       resultList.innerHTML = `<tr><td colspan='4' style='height: 500px;'><div id="wifi-loader">
@@ -315,8 +329,8 @@
     <div class="text" data-text="Searching"></div>
 </div></td></tr>`;
 
-      // fetch(`/api/ping-all`)
-      fetch('http://localhost:8080/ping-all')
+      fetch(`/api/ping-all`)
+      // fetch('http://localhost:8080/ping-all')
         .then(res => res.json())
         .then(data => {
           resultList.innerHTML = "";
